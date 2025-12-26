@@ -1,6 +1,9 @@
 ﻿using BepInEx;
 using BepInEx.Configuration;
+using CarcassLoader.Assets;
 using HarmonyLib;
+using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 
@@ -19,6 +22,9 @@ namespace CarcassLoader
         public static Plugin Instance { get; private set; }
 
         private static Harmony harmony;
+
+        public static SpawnableObjectsDatabase CGIconsDatabase = new SpawnableObjectsDatabase();
+
         public static ConfigEntry<bool> EnableInCyberGrind { get; private set; }
         public static ConfigEntry<bool> EnableDebugTool { get; private set; }
 
@@ -41,6 +47,12 @@ namespace CarcassLoader
             Logger.LogInfo($"{PLUGIN_NAME} is loaded!");
             EnableInCyberGrind = Config.Bind<bool>("General", "EnableInCyberGrind", true, "Enables Carcass In Cybergrind");
             EnableDebugTool = Config.Bind<bool>("General", "EnableDebugTool", false, "Enables debug tool binds");
+
+            //Loads carcass into an easy to find database that cybergrind Icons can pick up.
+            //Even if the player has not visited the terminal or spawner arm
+            CGIconsDatabase.enemies = [];
+            var newEnemies = new List<SpawnableObject> { CarcassAssets.GetCarcassSpawnableObject() };
+            CGIconsDatabase.enemies = newEnemies.ToArray();
         }
 
     
